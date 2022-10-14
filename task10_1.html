@@ -1,0 +1,70 @@
+<!--задание на изменение иконки внутри кнопки-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .btn {
+      width: 150px;
+      height: 50px;
+      border: none;
+      font-size: 20px;
+      background-color: lightgreen;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      cursor: pointer;
+    }
+    .icon {
+      font-size: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+  <button class="btn">
+    <div class="text">Кнопка</div>
+    <div class="icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" 
+        fill="currentColor" class="bi bi-arrow-down-left-circle" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" 
+        d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 
+        8a8 8 0 0 1 16 0zm-5.904-2.854a.5.5 0 1 1 .707.708L6.707 
+        9.95h2.768a.5.5 0 1 1 0 1H5.5a.5.5 0 0 1-.5-.5V6.475a.5.5 
+        0 1 1 1 0v2.768l4.096-4.097z"/>
+      </svg>
+    </div>
+  </button>
+ 
+  <script>
+    const btn = document.querySelector('.btn');
+    const icon = document.querySelector('.icon');
+    // создаем массив из 2-х иконок, которые будем переключать
+    const iconsArray = [`
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" 
+          fill="currentColor" class="bi bi-arrow-down-left-circle" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" 
+          d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 
+          8a8 8 0 0 1 16 0zm-5.904-2.854a.5.5 0 1 1 .707.708L6.707 
+          9.95h2.768a.5.5 0 1 1 0 1H5.5a.5.5 0 0 1-.5-.5V6.475a.5.5 
+          0 1 1 1 0v2.768l4.096-4.097z"/>
+        </svg>`, `
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" 
+        fill="currentColor" class="bi bi-arrow-down-left-circle-fill" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-5.904-2.803a.5.5 0 1 1
+         .707.707L6.707 10h2.768a.5.5 0 0 1 0 1H5.5a.5.5 0 0 1-.5-.5V6.525a.5
+         .5 0 0 1 1 0v2.768l4.096-4.096z"/>
+        </svg>`];
+
+    let i = 0;
+    // по клику на кнопку переключаем элементы массива
+    btn.addEventListener('click', () => {
+      i = i === 0 ? 1 : 0;
+      icon.innerHTML = iconsArray[i];
+    });
+  </script>
+</body>
+</html>

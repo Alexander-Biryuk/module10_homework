@@ -1,0 +1,126 @@
+<!-- Задание 10.3. Реализовать чат на основе эхо-сервера wss://echo-ws-service.herokuapp.com.-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .input_container {
+      width: 400px;
+      margin: 5px auto;
+    }
+
+    .inp {
+      width: 200px;
+      height: 20px;
+    }
+
+    .btn, .btn_geo{
+      height: 25px;
+      cursor: pointer;
+    }
+
+    .output {
+      margin: 5px auto;
+      width: 400px;
+      height: 400px;
+      border: 1px solid black;
+      overflow-y: scroll;
+      display: flex;
+      flex-direction: column;
+      
+    }
+
+    .sent {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+      border-radius: 2%;
+      padding: 5px 15px;
+      margin: 10px 5px;
+      background-color: rgb(114, 243, 146);
+      align-self: flex-end;
+    }
+
+    .received {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+      border-radius: 10%;
+      padding: 5px 15px;
+      margin: 10px 5px;
+      background-color: rgb(240, 179, 105);
+      align-self: flex-start;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div class="input_container">
+    <input class="inp" type="text" placeholder="Введите сообщение">
+    <button class="btn">Отправить</button>
+    <button class="btn_geo">Геолокация</button>
+  </div>
+  <div class="output"></div> <!--окно чата-->
+  
+  <script>
+    
+    const wsURL = 'wss://echo-ws-service.herokuapp.com';
+    const btn = document.querySelector('.btn');
+    const btnGeo = document.querySelector('.btn_geo');
+    const output = document.querySelector('.output');
+    const input = document.querySelector('.inp');
+
+    function pageLoaded() {
+      let socket = new WebSocket(wsURL);
+      let chat = true; // если true, то выводить сообщение от эхо-сервера, если false, то нет
+
+      socket.onopen = function() {
+        console.log('connection open');
+      }
+
+      socket.onmessage = function(event) {
+        if (chat) {
+        writeMessage(event.data, 'in');
+        }
+      };
+
+      socket.onerror = function(event) {
+        console.log(event.message);
+      }
+      
+      // функция вывода сообщений в чат
+      function writeMessage(message, direction) {
+        if (direction === 'out') output.innerHTML += `<div class="sent">${message}</div>`;
+        if (direction === 'in') output.innerHTML += `<div class="received">${message}</div>`;
+      }
+
+      // устанавливаем обработчик на кнопку отправки сообщения
+      btn.addEventListener('click', () => {
+        chat = true;
+        writeMessage(input.value, 'out');
+        socket.send(input.value);
+        input.value = ""; // очищаем input после отправки сообщения
+      });
+
+      // устанавливаем обработчик на кнопку "геолокация"
+      btnGeo.addEventListener('click', () => {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const link = `https://www.openstreetmap.org/#map=12/${position.coords.latitude}/${position.coords.longitude}`;
+            socket.send(position); // отправляем данные на сервер
+            let messageLink = `<a href=${link} target="_blank">геолокация</a>`;
+            chat = false; // сообщение от эхо-сервера не выводить
+            writeMessage(messageLink, 'out'); // вставляем в чат ссылку
+          })
+        } else {
+          alert('браузер не поддерживает геолокацию');
+        }
+      });
+      }
+    // запускаем чат после загрузки страницы  
+    document.addEventListener('DOMContentLoaded', pageLoaded);
+    
+  </script>
+   
+</body>
+</html>
